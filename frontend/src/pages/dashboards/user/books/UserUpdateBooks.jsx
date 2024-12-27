@@ -7,41 +7,20 @@ import useBooks from "../../../../hooks/useBooks";
 import { useLocation, useNavigate } from "react-router-dom";
 import UpdateBookForm from "./UpdateBookForm";
 import { hasStateChanged } from "../../../../utils/hasStateChanged";
+import { useGetCategoriesQuery } from "../../../../features/categories/categoriesApi";
+import { useUpdateBookMutation } from "../../../../features/books/booksApi";
+import useAuth from "../../../../hooks/useAuth";
+import { ErrorNotify, SuccessNotify } from "../../../../utils/NotifyContainer";
+import { hasEmptyProperties } from "../../../../utils/hasEmptyProperties";
 
 const UserUpdateBooks = ({ onSubmit }) => {
   const { state } = useLocation();
   const { payload, type } = state || {};
 
-  const [categories, setCategories] = useState([]);
-  const [successMessage, setSuccessMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-
+  const { data: categories } = useGetCategoriesQuery();
+  const [updateBook, { isLoading: isBookPosting }] = useUpdateBookMutation();
   const navigate = useNavigate();
-  const { user, isBookPosting, updateBook } = useBooks();
-
-  // Base URL for the API
-  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
-  // Axios instance with base URL and Authorization header
-  const axiosInstance = axios.create({
-    baseURL: BASE_URL,
-    headers: {
-      Authorization: `Bearer ${getToken()}`,
-    },
-  });
-
-  // Fetch all categories
-
-  const fetchCategories = useCallback(async () => {
-    try {
-      const response = await axiosInstance.get("/categories");
-      setCategories(response.data);
-    } catch (err) {
-      throw new Error(
-        err.response?.data?.message || "Failed to fetch categories"
-      );
-    }
-  }, [BASE_URL]);
+  const { user } = useAuth();
 
   const [bookDetails, setBookDetails] = useState({
     title: payload?.title || "",
@@ -77,39 +56,17 @@ const UserUpdateBooks = ({ onSubmit }) => {
     }
   };
 
-  //checks empty property
-  function hasEmptyProperties(obj) {
-    for (const key in obj) {
-      if (Object.prototype.hasOwnProperty.call(obj, key)) {
-        const value = obj[key];
-
-        // Check for empty strings, null, or undefined
-        if (value === "" || value === null || value === undefined) {
-          return true;
-        }
-
-        // Optionally check for nested objects
-        if (typeof value === "object" && !Array.isArray(value)) {
-          if (hasEmptyProperties(value)) return true;
-        }
-      }
-    }
-    return false;
-  }
-
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    console.log(bookDetails);
-
     if (bookDetails.qty < 1) {
-      alert("Qty can not be less than one");
+      ErrorNotify("Qty can not be less than one");
       return;
     }
 
     if (bookDetails.price == 0 || bookDetails.sell_price == 0) {
-      alert("price can not be zero");
+      ErrorNotify("price can not be zero");
       return;
     }
 
@@ -121,22 +78,34 @@ const UserUpdateBooks = ({ onSubmit }) => {
     };
 
     if (hasEmptyProperties(bookDetails)) {
-      console.log(bookDetails);
-      alert("Empty data can not be sent");
+      ErrorNotify("Empty data can not be sent");
       return;
     }
 
-    // Pass the formData to the parent component or API function
-    updateBook(payload?._id, bookData, coverPhoto).then((data) => {
-      if (data?._id) {
-        navigate("/dashboard/user/books");
-      }
-    });
-  };
+    //TODO: check if state has changed then allow update
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
+    // Append the book data object as a string
+    formData.append("data", JSON.stringify(bookData));
+    // Append the file
+    if (coverPhoto) {
+      formData.append("file", coverPhoto);
+    }
+
+    updateBook({
+      formData: formData,
+      book_id: payload?._id,
+      store_id: user?.store_id,
+    })
+      .unwrap()
+      .then(() => {
+        SuccessNotify("Book has been updated");
+        navigate("/dashboard/user/books");
+      })
+      .catch((error) => {
+        console.log(error);
+        ErrorNotify(error?.response?.data?.message || "Failed to update book");
+      });
+  };
 
   return (
     <div className="container mt-2">
@@ -146,12 +115,7 @@ const UserUpdateBooks = ({ onSubmit }) => {
         title={"Back"}
       ></BackToPrev>
       <h2>Update Book</h2>
-      {successMessage && (
-        <div className="alert alert-success">{successMessage}</div>
-      )}
-      {errorMessage && (
-        <div className="alert alert-success">{errorMessage}</div>
-      )}
+
       {/* form */}
       <UpdateBookForm
         handleChange={handleChange}

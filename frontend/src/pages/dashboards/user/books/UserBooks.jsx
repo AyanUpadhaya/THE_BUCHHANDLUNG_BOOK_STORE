@@ -5,7 +5,12 @@ import useBooks from "../../../../hooks/useBooks";
 import Loader from "../../../../components/loader/Loader";
 import SomethingWentWrong from "../../../../components/cards/error/SomethingWentWrong";
 import useAuth from "../../../../hooks/useAuth";
-import { useGetStoreBooksQuery } from "../../../../features/books/booksApi";
+import {
+  useDeleteBookMutation,
+  useGetStoreBooksQuery,
+} from "../../../../features/books/booksApi";
+import RequestLoader from "../../../../components/modals/RequestLoader";
+import { ErrorNotify, SuccessNotify } from "../../../../utils/NotifyContainer";
 
 const UserBooks = () => {
   const navigate = useNavigate();
@@ -15,6 +20,21 @@ const UserBooks = () => {
     isError,
     isLoading,
   } = useGetStoreBooksQuery(user?.store_id);
+
+  const [deleteBook, { isLoading: isDeleting, isError: isDeleteError }] =
+    useDeleteBookMutation();
+
+  const handleDeleteBook = (book_id) => {
+    deleteBook({ book_id, store_id: user?.store_id })
+      .unwrap()
+      .then(() => {
+        SuccessNotify("Book has been created");
+        navigate("/dashboard/user/books");
+      })
+      .catch((error) => {
+        ErrorNotify(error?.response?.data?.message || "Failed to create book");
+      });
+  };
 
   if (isError) {
     return <SomethingWentWrong></SomethingWentWrong>;
@@ -47,13 +67,17 @@ const UserBooks = () => {
           </div>
           <div>
             <button onClick={() => navigate("add")} className="btn btn-success">
-              Add Book
+              + Add Book
             </button>
           </div>
         </div>
         {/* table */}
         <div>
-          <UserBooksTable data={storeBooks}></UserBooksTable>
+          <UserBooksTable
+            handleDeleteBook={handleDeleteBook}
+            data={storeBooks}
+          ></UserBooksTable>
+          {isDeleting && <RequestLoader></RequestLoader>}
         </div>
       </div>
     </div>

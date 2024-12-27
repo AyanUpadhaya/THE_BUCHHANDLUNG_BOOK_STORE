@@ -3,9 +3,9 @@ const Store = require("../models/Store");
 const User = require("../models/User");
 const uploadToCloudinary = require("../utils/uploadToCloudinary");
 const Category = require("../models/Category");
-
-const { logInfo } = require("../utils/loggers");
 const sendResponse = require("../utils/sendResponse");
+const { logInfo } = require("../utils/loggers");
+const { ApiError } = require("../utils/ApiError");
 
 // Create a new book
 const createBook = async (req, res) => {
@@ -30,14 +30,12 @@ const createBook = async (req, res) => {
       "name"
     );
 
-    res.status(201).json({
+    sendResponse(res, 201, {
       message: "Book created successfully",
       data: populatedBook,
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Failed to create book", error: error.message });
+    throw new ApiError(500, "Failed to create book");
   }
 };
 
@@ -47,11 +45,10 @@ const getAllBooks = async (req, res) => {
     const books = await Book.find()
       .populate("category_id created_by store_id")
       .sort({ createdAt: -1 });
-    res.status(200).json(books);
+
+    sendResponse(res, 200, books);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Failed to fetch books", error: error.message });
+    throw new ApiError(500, "Failed to fetch books");
   }
 };
 
@@ -68,12 +65,9 @@ const getBooksByStore = async (req, res) => {
       return res.status(200).json([]);
     }
 
-    res.status(200).json(books);
+    sendResponse(res, 200, books);
   } catch (error) {
-    res.status(500).json({
-      message: "Failed to fetch books for this store",
-      error: error.message,
-    });
+    throw new ApiError(500, "Failed to fetch books for this store");
   }
 };
 
@@ -95,16 +89,9 @@ const getBooksByCategoryId = async (req, res) => {
       return res.status(200).json({ category_name: category?.name, books: [] });
     }
 
-    // return res
-    //   .status(200)
-    //   .json({ category_name: category?.name, books: books });
-
-    sendResponse(res,200, { category_name: category?.name, books: books });
+    sendResponse(res, 200, { category_name: category?.name, books: books });
   } catch (error) {
-    res.status(500).json({
-      message: "Failed to fetch books for this category",
-      error: error.message,
-    });
+    throw new ApiError(500, "Failed to fetch books for this category");
   }
 };
 
@@ -141,14 +128,13 @@ const updateBook = async (req, res) => {
         cover_photo: result,
       });
 
-      res
-        .status(200)
-        .json({ message: "Book updated successfully", data: updatedBook });
+      sendResponse(res, 200, {
+        message: "Book updated successfully",
+        data: updatedBook,
+      });
     }
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Failed to update book", error: error.message });
+    throw new ApiError(500, "Failed to update book");
   }
 };
 
@@ -183,11 +169,9 @@ const deleteBook = async (req, res) => {
     // Delete the book
     await Book.findByIdAndDelete(book_id);
 
-    res.status(200).json({ message: "Book deleted successfully" });
+    sendResponse(res, 200, { message: "Book deleted successfully" });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Failed to delete book", error: error.message });
+    throw new ApiError(500, "Failed to delete book");
   }
 };
 

@@ -1,15 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import formatToLocaleDateString from "../../../../utils/formatToLocaleDateString";
-import useBooks from "../../../../hooks/useBooks";
 import ViewIcon from "../../../../components/dashboard/icons/ViewIcon";
 import EditIcon from "../../../../components/dashboard/icons/EditIcon";
 import TrashIcon from "../../../../components/dashboard/icons/TrashIcon";
 
-const UserBooksTable = ({ data }) => {
+const UserBooksTable = ({ data, handleDeleteBook }) => {
   const navigate = useNavigate();
-  const { isDeleting, deleteBook, deleteError } = useBooks();
-  const [btnIndex, setbtnIndex] = useState(null);
 
   const handleNavigate = (item, path) => {
     navigate(`${path}`, {
@@ -20,24 +17,6 @@ const UserBooksTable = ({ data }) => {
     });
   };
 
-  const handleDelete = (id, idx) => {
-    setbtnIndex(idx);
-    deleteBook(id)
-      .then(() => {
-        alert("Book is deleted");
-        return;
-      })
-      .catch((error) => {
-        alert(error?.message);
-      })
-      .finally(() => {
-        setbtnIndex(null);
-      });
-  };
-
-  const truncate = (text) => {
-    return text.length > 34 ? text.slice(0, 34) + "..." : text;
-  };
   return (
     <>
       <div className="table-responsive">
@@ -58,9 +37,11 @@ const UserBooksTable = ({ data }) => {
               data.map((book, index) => (
                 <tr key={book._id}>
                   <th scope="row">{index + 1}</th>
-                  <td>{truncate(book?.title)}</td>
-                  <td>{truncate(book?.author)}</td>
-                  <td>{book?.category_id?.name || "N/A"}</td>
+                  <td className="truncate">{book?.title}</td>
+                  <td className="truncate">{book?.author}</td>
+                  <td className="truncate">
+                    {book?.category_id?.name || "N/A"}
+                  </td>
                   <td>{book?.qty || "N/A"}</td>
                   <td>{formatToLocaleDateString(book?.createdAt)}</td>
                   <td className="d-flex gap-2 align-items-center">
@@ -78,16 +59,11 @@ const UserBooksTable = ({ data }) => {
                     </button>
                     <button
                       onClick={() => {
-                        handleDelete(book._id, index);
+                        handleDeleteBook(book._id);
                       }}
-                      disabled={isDeleting && btnIndex == index}
                       className="btn btn-danger"
                     >
-                      {isDeleting && btnIndex == index ? (
-                        "..."
-                      ) : (
-                        <TrashIcon></TrashIcon>
-                      )}
+                      <TrashIcon></TrashIcon>
                     </button>
                   </td>
                 </tr>

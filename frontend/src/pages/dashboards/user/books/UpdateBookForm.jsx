@@ -24,16 +24,16 @@ const UpdateBookForm = ({
             name="title"
             id="title"
             placeholder="Title"
-            value={bookDetails.title}
+            value={bookDetails?.title}
             onChange={handleChange}
             className="w-full p-2 border rounded form-control"
           />
         </div>
 
-        {categories.length > 0 && (
+        {categories?.length > 0 && (
           <CategoryDropdown
             categories={categories}
-            selectedCategory={bookDetails.category_id}
+            selectedCategory={bookDetails?.category_id}
             onCategoryChange={handleCategoryChange}
           />
         )}
@@ -44,7 +44,7 @@ const UpdateBookForm = ({
             name="author"
             id="author"
             placeholder="Author"
-            value={bookDetails.author}
+            value={bookDetails?.author}
             onChange={handleChange}
             className="w-full p-2 border rounded form-control"
           />
@@ -56,7 +56,7 @@ const UpdateBookForm = ({
             name="language"
             id="language"
             placeholder="language"
-            value={bookDetails.language}
+            value={bookDetails?.language}
             onChange={handleChange}
             className="w-full p-2 border rounded form-control"
           />
@@ -68,7 +68,7 @@ const UpdateBookForm = ({
             name="about"
             id="about"
             placeholder="About the Book"
-            value={bookDetails.about}
+            value={bookDetails?.about}
             onChange={handleChange}
             rows="3"
             className="w-full p-2 border rounded form-control"
@@ -80,7 +80,7 @@ const UpdateBookForm = ({
           <input
             type="date"
             name="published_date"
-            value={bookDetails.published_date}
+            value={bookDetails?.published_date}
             onChange={handleChange}
             className="w-full p-2 border rounded form-control"
           />
@@ -93,7 +93,7 @@ const UpdateBookForm = ({
             name="qty"
             id="qty"
             placeholder="Quantity"
-            value={bookDetails.qty}
+            value={bookDetails?.qty}
             onChange={handleChange}
             className="w-full p-2 border rounded form-control"
           />
@@ -105,7 +105,7 @@ const UpdateBookForm = ({
             name="price"
             id="price"
             placeholder="Price"
-            value={bookDetails.price}
+            value={bookDetails?.price}
             onChange={handleChange}
             className="w-full p-2 border rounded form-control"
           />
@@ -118,7 +118,7 @@ const UpdateBookForm = ({
             name="sell_price"
             id="sell_price"
             placeholder="Sell Price"
-            value={bookDetails.sell_price}
+            value={bookDetails?.sell_price}
             onChange={handleChange}
             className="w-full p-2 border rounded form-control"
           />
@@ -131,7 +131,7 @@ const UpdateBookForm = ({
             name="tags"
             id="tags"
             placeholder="Tags (comma separated)"
-            value={bookDetails.tags}
+            value={bookDetails?.tags}
             onChange={handleChange}
             className="w-full p-2 border rounded form-control"
           />
@@ -153,7 +153,7 @@ const UpdateBookForm = ({
             type="submit"
             className="btn btn-primary max-w-max "
           >
-            {isBookPosting ? "Submitting..." : "Submit"}
+            {isBookPosting ? "Updating..." : "Submit"}
           </button>
         </div>
       </form>

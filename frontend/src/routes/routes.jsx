@@ -211,7 +211,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "user/ooks/update",
+        path: "user/books/update",
         element: (
           <PrivateRoute role={"user"}>
             <BookProvider>
