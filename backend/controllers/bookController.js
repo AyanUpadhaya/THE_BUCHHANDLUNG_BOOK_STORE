@@ -2,6 +2,11 @@ const Book = require("../models/Book");
 const Store = require("../models/Store");
 const User = require("../models/User");
 const uploadToCloudinary = require("../utils/uploadToCloudinary");
+const Category = require("../models/Category");
+
+const { logInfo } = require("../utils/loggers");
+const sendResponse = require("../utils/sendResponse");
+
 // Create a new book
 const createBook = async (req, res) => {
   try {
@@ -67,6 +72,37 @@ const getBooksByStore = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       message: "Failed to fetch books for this store",
+      error: error.message,
+    });
+  }
+};
+
+const getBooksByCategoryId = async (req, res) => {
+  try {
+    const { categoryId } = req.params;
+    const category = await Category.findById(categoryId);
+    if (!category) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+
+    logInfo("Category:", category);
+
+    const books = await Book.find({ category_id: categoryId })
+      .populate("created_by")
+      .sort({ createdAt: -1 });
+
+    if (books.length === 0) {
+      return res.status(200).json({ category_name: category?.name, books: [] });
+    }
+
+    // return res
+    //   .status(200)
+    //   .json({ category_name: category?.name, books: books });
+
+    sendResponse(res,200, { category_name: category?.name, books: books });
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to fetch books for this category",
       error: error.message,
     });
   }
@@ -186,4 +222,5 @@ module.exports = {
   updateBook,
   deleteBook,
   getSingleBook,
+  getBooksByCategoryId,
 };

@@ -1,41 +1,26 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { useParams } from "react-router-dom";
 import BackToPrev from "../../components/dashboard/shared/BackToPrev";
 import useCart from "../../hooks/useCart";
-import FullPageLoader from "../../components/loader/FullPageLoader";
+import { useGetSingleBookQuery } from "../../features/books/booksApi";
+import Loader from "../../components/loader/Loader";
+import SomethingWentWrong from "../../components/cards/error/SomethingWentWrong";
 
 const PublicBookDetails = () => {
   const { book_id } = useParams();
-  const [book, setBook] = useState(null);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
+
   const { cart, addToCart } = useCart();
-  // Base URL for the API
-  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  const axiosInstance = axios.create({
-    baseURL: BASE_URL,
-  });
+  const {
+    data: book,
+    error,
+    isError,
+    isLoading,
+  } = useGetSingleBookQuery(book_id);
 
-  useEffect(() => {
-    const fetchBookDetails = async () => {
-      try {
-        setLoading(true);
-        const response = await axiosInstance.get(`/books/${book_id}`);
-        setBook(response.data);
-      } catch (err) {
-        setError(err.response?.data?.message || "Failed to fetch book details");
-      } finally {
-        setLoading(false);
-      }
-    };
+  if (isLoading) return <Loader></Loader>;
 
-    fetchBookDetails();
-  }, [book_id]);
-
-  if (loading) return <FullPageLoader></FullPageLoader>; // Show loading state
-  if (error) return <p style={{ color: "red" }}>{error}</p>; // Show error state
+  if (isError) return <SomethingWentWrong></SomethingWentWrong>;
 
   return (
     <div className="container mt-4 py-4">

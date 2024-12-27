@@ -8,6 +8,7 @@ const mainRouter = require("./routes/mainRouter");
 const PORT = process.env.PORT || 3000;
 const initAdmin = require("./utils/createFirstAdmin");
 const { initializeMulter } = require("./config/multer.config");
+const { logInfo, logError } = require("./utils/loggers");
 
 const app = express();
 app.use(cors());
@@ -18,19 +19,14 @@ app.use(express.urlencoded({ extended: true }));
 connectDb()
   .then(() => {
     app.listen(PORT, () => {
-      console.log("Server is running on port ", PORT);
+      logInfo("Server is running on port ", PORT);
     });
     initAdmin().then(() => {
       initializeMulter(app);
       app.use(mainRouter);
     });
-    
   })
-  .catch((err) => {
-    console.error("Database connection failed:", err);
-    process.exit(1);
-  });
-
+ 
 app.get("/", (req, res) => {
   res.send("Weloce to the Bookstore API");
 });

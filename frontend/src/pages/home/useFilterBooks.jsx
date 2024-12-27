@@ -5,6 +5,8 @@ export default function useFilterBooks(data) {
   const [filteredBooks, setFilteredBooks] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
 
+  console.log(groupedBooks);
+
   const groupByCategory = (data) => {
     return data.reduce((acc, book) => {
       const categoryName = book.category_id.name;

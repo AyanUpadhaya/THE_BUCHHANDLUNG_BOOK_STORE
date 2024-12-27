@@ -6,6 +6,7 @@ const {
   updateBook,
   deleteBook,
   getSingleBook,
+  getBooksByCategoryId,
 } = require("../controllers/bookController");
 const verifyToken = require("../middlewares/verifyToken");
 
@@ -22,6 +23,9 @@ router.get("/books/store/:store_id", getBooksByStore);
 
 // single book by its ID
 router.get("/books/:book_id", getSingleBook);
+
+//get books by category id
+router.get("/books/category/:categoryId", getBooksByCategoryId);
 
 // Update book
 router.put("/books/:book_id", verifyToken, updateBook);

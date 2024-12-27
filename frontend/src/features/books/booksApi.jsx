@@ -7,6 +7,10 @@ const booksApi = apiSlice.injectEndpoints({
       transformResponse: (book) => book.reverse(),
       providesTags: ["Books"],
     }),
+
+    getSingleBook: builder.query({
+      query: (book_id) => `/books/${book_id}`,
+    }),
     getStoreBooks: builder.query({
       query: (store_id) => `/books/store/${store_id}`,
     }),
@@ -20,4 +24,9 @@ const booksApi = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useGetBooksQuery, useGetStoreBooksQuery, useCreateBookMutation } = booksApi;
+export const {
+  useGetBooksQuery,
+  useGetStoreBooksQuery,
+  useCreateBookMutation,
+  useGetSingleBookQuery,
+} = booksApi;

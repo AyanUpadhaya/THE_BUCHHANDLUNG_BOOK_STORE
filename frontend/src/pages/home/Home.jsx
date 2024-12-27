@@ -15,7 +15,7 @@ function Home() {
     return <SomethingWentWrong></SomethingWentWrong>;
   }
 
-  if (isLoading || !groupedBooks) {
+  if (isLoading) {
     return <Loader />;
   }
 
