@@ -50,9 +50,28 @@ const categoriesApi = apiSlice.injectEndpoints({
     deleteCategory: builder.mutation({
       query: (id) => ({
         url: `/categories/${id}`,
-        method: "POST",
+        method: "DELETE",
       }),
-      invalidatesTags: ["Categories"],
+      //pessimistic update
+      async onQueryStarted(id, { dispatch, queryFulfilled }) {
+        try {
+          const data = await queryFulfilled;
+          if (data) {
+            dispatch(
+              apiSlice.util.updateQueryData(
+                "getCategories",
+                undefined,
+                (draft) => {
+                  const itemIndx = draft.findIndex((item) => item._id == id);
+                  draft.splice(itemIndx, 1);
+                }
+              )
+            );
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      },
     }),
   }),
 });

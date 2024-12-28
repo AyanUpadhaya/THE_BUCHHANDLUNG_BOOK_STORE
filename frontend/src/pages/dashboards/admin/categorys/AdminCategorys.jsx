@@ -1,14 +1,19 @@
 import React, { useState } from "react";
 import AdminCategoryTable from "./AdminCategoryTable";
-import { useNavigate } from "react-router-dom";
-import AddIcon from "../../../../components/dashboard/icons/AddIcon";
 import Loader from "../../../../components/loader/Loader";
-import { useGetCategoriesQuery } from "../../../../features/categories/categoriesApi";
+import {
+  useDeleteCategoryMutation,
+  useGetCategoriesQuery,
+} from "../../../../features/categories/categoriesApi";
 import SomethingWentWrong from "../../../../components/cards/error/SomethingWentWrong";
+import RequestLoader from "../../../../components/modals/RequestLoader";
+import { ErrorNotify, SuccessNotify } from "../../../../utils/NotifyContainer";
+import { useNavigate } from "react-router-dom";
 
 const AdminCategorys = () => {
   const [isAscending, setIsAscending] = useState(false);
   const [searchValue, setSearchValue] = useState("");
+  const navigate = useNavigate();
   //sort by timestamp
   const sortByTime = (a, b) => {
     if (isAscending) {
@@ -34,13 +39,26 @@ const AdminCategorys = () => {
     isError,
   } = useGetCategoriesQuery();
 
+  const [deleteCategory, { isLoading: isDeleting }] =
+    useDeleteCategoryMutation();
+
+  const handleDelete = (id) => {
+    deleteCategory(id)
+      .unwrap()
+      .then(() => {
+        SuccessNotify("Category deleted");
+      })
+      .catch((error) => {
+        console.log(error);
+        ErrorNotify(error?.data?.message || "Failed to delete category");
+      });
+  };
+
   const filteredData =
     categories &&
     [...categories]
       ?.sort(sortByTime)
       ?.filter((item) => filterBySearch(item, searchValue));
-
-  const navigate = useNavigate();
 
   if (isError) {
     return <SomethingWentWrong></SomethingWentWrong>;
@@ -58,7 +76,10 @@ const AdminCategorys = () => {
             <h2>Categories </h2>
           </div>
           <div>
-            <button onClick={() => navigate("add")} className="btn btn-md btn-success">
+            <button
+              onClick={() => navigate("add")}
+              className="btn btn-md btn-success"
+            >
               +Add
             </button>
           </div>
@@ -76,8 +97,10 @@ const AdminCategorys = () => {
           </div>
           <AdminCategoryTable
             data={filteredData}
-            navigate={navigate}
+            handleDelete={handleDelete}
           ></AdminCategoryTable>
+
+          {isDeleting && <RequestLoader></RequestLoader>}
         </div>
       </div>
     </div>

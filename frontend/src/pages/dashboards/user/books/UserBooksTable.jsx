@@ -36,7 +36,7 @@ const UserBooksTable = ({ data, handleDeleteBook }) => {
             {data && data.length > 0 ? (
               data.map((book, index) => (
                 <tr key={book._id}>
-                  <th scope="row">{index + 1}</th>
+                  <td scope="row">{index + 1}</td>
                   <td className="truncate">{book?.title}</td>
                   <td className="truncate">{book?.author}</td>
                   <td className="truncate">

@@ -23,7 +23,7 @@ const AdminStoreTable = ({ data }) => {
             {data && data.length > 0 ? (
               data.map((item, idx) => (
                 <tr key={item?._id}>
-                  <th scope="row">{idx + 1}</th>
+                  <td scope="row">{idx + 1}</td>
                   <td>{truncate(item?.name)}</td>
                   <td>{item?.created_by?.name}</td>
                   <td>{item?.book_ids?.length}</td>

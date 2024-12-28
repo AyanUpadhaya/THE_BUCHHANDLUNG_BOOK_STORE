@@ -22,14 +22,14 @@ const UserStoreOrdersTable = ({ orders = [] }) => {
         <table className="table table-bordered rounded">
           <thead>
             <tr>
-              <th className="custom-bg text-white">Order ID</th>
-              <th className="custom-bg text-white">Customer Name</th>
-              <th className="custom-bg text-white">Books Ordered</th>
-              <th className="custom-bg text-white">Total Price</th>
-              <th className="custom-bg text-white">Status</th>
-              <th className="custom-bg text-white">Payment Method</th>
-              <th className="custom-bg text-white">Date</th>
-              <th className="custom-bg text-white">Action</th>
+              <th>Order ID</th>
+              <th>Customer Name</th>
+              <th>Books Ordered</th>
+              <th>Total Price</th>
+              <th>Status</th>
+              <th>Payment Method</th>
+              <th>Date</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>

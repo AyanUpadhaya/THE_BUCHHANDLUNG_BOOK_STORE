@@ -32,7 +32,7 @@ const UserBooks = () => {
         navigate("/dashboard/user/books");
       })
       .catch((error) => {
-        ErrorNotify(error?.response?.data?.message || "Failed to create book");
+        ErrorNotify(error?.response?.data?.message || "Failed to delete book");
       });
   };
 
@@ -44,18 +44,7 @@ const UserBooks = () => {
     return <Loader />;
   }
 
-  if (storeBooks?.length == 0) {
-    return (
-      <div className="w-full d-flex flex-column gap-2 justify-content-center">
-        <div className="text-center">
-          <h2>You currently don't have any books</h2>
-          <button onClick={() => navigate("add")} className="btn btn-success">
-            Create Book
-          </button>
-        </div>
-      </div>
-    );
-  }
+ 
 
   return (
     <div className="w-100 h-100">

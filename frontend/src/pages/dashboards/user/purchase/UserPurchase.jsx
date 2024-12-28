@@ -14,9 +14,7 @@ const UserPurchase = () => {
     fetchUserOrders(user._id);
   }, []);
 
-  if (error) {
-    return <SomethingWentWrong></SomethingWentWrong>;
-  }
+ 
 
   if (loading) {
     return <Loader />;

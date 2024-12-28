@@ -173,7 +173,7 @@ export default function Sidebar() {
                 aria-current="page"
               >
                 <CategoryIcon></CategoryIcon>
-                <span>Categorys</span>
+                <span>Categories</span>
               </Link>
             </li>
             {/* users */}

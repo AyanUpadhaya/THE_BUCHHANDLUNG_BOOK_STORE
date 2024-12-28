@@ -47,7 +47,7 @@ const AdminUpdateCategory = () => {
               name="name"
             />
             <br />
-            <button disabled={loading} className="btn btn-dark">
+            <button disabled={isLoading} className="btn btn-dark">
               {isLoading ? "Submiting..." : "Submit"}
             </button>
           </form>

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { formatToUSDate } from "../../../../utils/formatToUSDate";
 import EditIcon from "../../../../components/dashboard/icons/EditIcon";
 import TrashIcon from "../../../../components/dashboard/icons/TrashIcon";
 import formatToLocaleDateString from "../../../../utils/formatToLocaleDateString";
@@ -7,24 +6,28 @@ import ResponsivePagination from "react-responsive-pagination";
 import "react-responsive-pagination/themes/classic.css";
 import getTableIndex from "../../../../utils/getTableIndex";
 import SelecLimit from "../../../../components/ui/SelecLimit";
+import { useNavigate } from "react-router-dom";
 
-const AdminCategoryTable = ({ navigate, data }) => {
+const AdminCategoryTable = ({ data, handleDelete }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
   const totalPages = Math.ceil(data?.length / rowsPerPage);
 
-   const currentRows = data
-     ? [...data].slice(indexOfFirstRow, indexOfLastRow)
-     : [];
+  const navigate = useNavigate();
 
-   //only solution to prevent - currentRows if 0
-   useEffect(() => {
-     if (currentRows.length < 1) {
-       setCurrentPage(1);
-     }
-   }, [currentRows]);
+
+  const currentRows = data
+    ? [...data].slice(indexOfFirstRow, indexOfLastRow)
+    : [];
+
+  //only solution to prevent - currentRows if 0
+  useEffect(() => {
+    if (currentRows.length < 1) {
+      setCurrentPage(1);
+    }
+  }, [currentRows]);
 
   const handleNavigate = (item) => {
     navigate(`update`, {
@@ -34,18 +37,7 @@ const AdminCategoryTable = ({ navigate, data }) => {
       },
     });
   };
-  const handleDelete = (id) => {
-    deleteCategory(id)
-      .then((data) => {
-        if (data?.success) {
-          alert("Category deleted");
-        }
-      })
-      .catch((err) => {
-        alert(err);
-      });
-  };
-
+ 
   return (
     <div className="table-responsive">
       <table className="table table-striped">
@@ -97,8 +89,8 @@ const AdminCategoryTable = ({ navigate, data }) => {
       </table>
       <div
         className={` ${
-          data?.length < 1 && "d-none"
-        } py-2 d-flex justify-content-center align-items-center gap-1`}
+          currentRows?.length < 1 && "d-none"
+        } py-2 d-flex justify-content-end align-items-center gap-1`}
       >
         <ResponsivePagination
           current={currentPage}
