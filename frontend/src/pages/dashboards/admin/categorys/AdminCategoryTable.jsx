@@ -1,11 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { formatToUSDate } from "../../../../utils/formatToUSDate";
-import useCategories from "../../../../hooks/useCategories";
 import EditIcon from "../../../../components/dashboard/icons/EditIcon";
 import TrashIcon from "../../../../components/dashboard/icons/TrashIcon";
+import formatToLocaleDateString from "../../../../utils/formatToLocaleDateString";
+import ResponsivePagination from "react-responsive-pagination";
+import "react-responsive-pagination/themes/classic.css";
+import getTableIndex from "../../../../utils/getTableIndex";
+import SelecLimit from "../../../../components/ui/SelecLimit";
 
 const AdminCategoryTable = ({ navigate, data }) => {
-  const { loading, error, deleteCategory } = useCategories();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const indexOfLastRow = currentPage * rowsPerPage;
+  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
+  const totalPages = Math.ceil(data?.length / rowsPerPage);
+
+   const currentRows = data
+     ? [...data].slice(indexOfFirstRow, indexOfLastRow)
+     : [];
+
+   //only solution to prevent - currentRows if 0
+   useEffect(() => {
+     if (currentRows.length < 1) {
+       setCurrentPage(1);
+     }
+   }, [currentRows]);
+
   const handleNavigate = (item) => {
     navigate(`update`, {
       state: {
@@ -27,7 +47,7 @@ const AdminCategoryTable = ({ navigate, data }) => {
   };
 
   return (
-    <>
+    <div className="table-responsive">
       <table className="table table-striped">
         <thead>
           <tr>
@@ -39,13 +59,15 @@ const AdminCategoryTable = ({ navigate, data }) => {
           </tr>
         </thead>
         <tbody>
-          {data && data.length > 0 ? (
-            data.map((item, idx) => (
+          {currentRows && currentRows?.length > 0 ? (
+            currentRows.map((item, idx) => (
               <tr key={item?._id}>
-                <th scope="row">{idx + 1}</th>
+                <td scope="row">
+                  {getTableIndex(currentPage, rowsPerPage, idx)}
+                </td>
                 <td>{item?.name}</td>
-                <td>{formatToUSDate(item?.createdAt)}</td>
-                <td>{formatToUSDate(item?.updatedAt)}</td>
+                <td>{formatToLocaleDateString(item?.createdAt)}</td>
+                <td>{formatToLocaleDateString(item?.updatedAt)}</td>
                 <td className="d-flex gap-2 align-items-center">
                   <button
                     onClick={() => handleNavigate(item)}
@@ -73,7 +95,22 @@ const AdminCategoryTable = ({ navigate, data }) => {
           )}
         </tbody>
       </table>
-    </>
+      <div
+        className={` ${
+          data?.length < 1 && "d-none"
+        } py-2 d-flex justify-content-center align-items-center gap-1`}
+      >
+        <ResponsivePagination
+          current={currentPage}
+          total={totalPages}
+          onPageChange={setCurrentPage}
+          extraClassName="justify-content-end"
+        />
+        <div>
+          <SelecLimit onChangeLimit={setRowsPerPage}></SelecLimit>
+        </div>
+      </div>
+    </div>
   );
 };
 

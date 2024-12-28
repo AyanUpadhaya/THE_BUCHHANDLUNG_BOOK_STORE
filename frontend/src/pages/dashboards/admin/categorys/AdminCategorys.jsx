@@ -1,26 +1,53 @@
-import React from "react";
+import React, { useState } from "react";
 import AdminCategoryTable from "./AdminCategoryTable";
 import { useNavigate } from "react-router-dom";
-import useCategories from "../../../../hooks/useCategories";
 import AddIcon from "../../../../components/dashboard/icons/AddIcon";
-import FullPageLoader from "../../../../components/loader/FullPageLoader";
+import Loader from "../../../../components/loader/Loader";
+import { useGetCategoriesQuery } from "../../../../features/categories/categoriesApi";
+import SomethingWentWrong from "../../../../components/cards/error/SomethingWentWrong";
 
 const AdminCategorys = () => {
-  const navigate = useNavigate();
-  const { categories, loading, error } = useCategories();
+  const [isAscending, setIsAscending] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+  //sort by timestamp
+  const sortByTime = (a, b) => {
+    if (isAscending) {
+      return a.timestamp - b.timestamp;
+    } else {
+      return b.timestamp - a.timestamp;
+    }
+  };
 
-  if (error) {
-    return (
-      <div className="w-100 h-100 d-flex justify-content-center align-items-center">
-        <div>
-          <h2>Something went wrong</h2>
-        </div>
-      </div>
-    );
+  //search filter
+
+  const filterBySearch = (data, searchValue) => {
+    if (searchValue.trim().length > 0) {
+      return data?.name?.toLowerCase().startsWith(searchValue?.toLowerCase());
+    } else {
+      return true;
+    }
+  };
+  const {
+    data: categories,
+    isLoading,
+    error,
+    isError,
+  } = useGetCategoriesQuery();
+
+  const filteredData =
+    categories &&
+    [...categories]
+      ?.sort(sortByTime)
+      ?.filter((item) => filterBySearch(item, searchValue));
+
+  const navigate = useNavigate();
+
+  if (isError) {
+    return <SomethingWentWrong></SomethingWentWrong>;
   }
 
-  if (loading) {
-    return <FullPageLoader></FullPageLoader>;
+  if (isLoading) {
+    return <Loader />;
   }
 
   return (
@@ -31,25 +58,26 @@ const AdminCategorys = () => {
             <h2>Categories </h2>
           </div>
           <div>
-            <button onClick={() => navigate("add")} className="btn btn-success">
-              <AddIcon></AddIcon> 
+            <button onClick={() => navigate("add")} className="btn btn-md btn-success">
+              +Add
             </button>
           </div>
         </div>
 
         <div>
-          {loading ? (
-            <>
-              <div className="p-3">
-                <h2 className="fs-3">Loading...</h2>
-              </div>
-            </>
-          ) : (
-            <AdminCategoryTable
-              data={categories}
-              navigate={navigate}
-            ></AdminCategoryTable>
-          )}
+          <div className="w-full d-flex justify-content-between gap-2 mb-3">
+            <input
+              type="text"
+              className="form-control w-50"
+              placeholder="Search..."
+              onChange={(e) => setSearchValue(e.target.value)}
+              value={searchValue}
+            />
+          </div>
+          <AdminCategoryTable
+            data={filteredData}
+            navigate={navigate}
+          ></AdminCategoryTable>
         </div>
       </div>
     </div>

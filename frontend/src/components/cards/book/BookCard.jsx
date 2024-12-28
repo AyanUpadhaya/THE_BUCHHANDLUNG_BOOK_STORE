@@ -7,7 +7,7 @@ export default function BookCard({ book }) {
     return text.length > 34 ? text.slice(0, 34) + "..." : text;
   };
   return (
-    <div key={book._id} className="col-md-4 mb-2">
+    <div key={book._id} className="mb-2">
       <div className="card">
         <img
           src={book.cover_photo}

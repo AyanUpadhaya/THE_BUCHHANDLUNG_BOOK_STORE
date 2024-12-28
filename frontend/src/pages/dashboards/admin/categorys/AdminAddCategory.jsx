@@ -1,22 +1,29 @@
 import React from "react";
 import BackToPrev from "../../../../components/dashboard/shared/BackToPrev";
-import useCategories from "../../../../hooks/useCategories";
 import { useNavigate } from "react-router-dom";
+import { useCreateCategoryMutation } from "../../../../features/categories/categoriesApi";
+import { ErrorNotify, SuccessNotify } from "../../../../utils/NotifyContainer";
+
 const AdminAddCategory = () => {
-  const { loading, error, createCategory } = useCategories();
+  const [createCategory, { isLoading, isError }] = useCreateCategoryMutation();
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const form = e.target;
     const categoryName = form.name.value;
-    createCategory({ name: categoryName })
-      .then((data) => {
-        if (data?.success) {
-          navigate("/dashboard/admin/categorys");
-        }
+    const data = { name: categoryName };
+    createCategory(data)
+      .unwrap()
+      .then(() => {
+        SuccessNotify("Category has been created");
+        navigate("/dashboard/admin/categorys");
       })
-      .catch((err) => alert(err));
+      .catch((error) => {
+        ErrorNotify(
+          error?.response?.data?.message || "Failed to create category"
+        );
+      });
   };
   return (
     <div className="py-2">
@@ -29,8 +36,8 @@ const AdminAddCategory = () => {
           <form onSubmit={handleSubmit}>
             <input type="text" className="form-control" name="name" required />
             <br />
-            <button disabled={loading} className="btn btn-dark">
-              {loading ? "Submiting..." : "Submit"}
+            <button disabled={isLoading} className="btn btn-dark">
+              {isLoading ? "Submiting..." : "Submit"}
             </button>
           </form>
         </div>

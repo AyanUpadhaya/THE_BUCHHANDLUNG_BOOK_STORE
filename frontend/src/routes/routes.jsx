@@ -144,9 +144,7 @@ const router = createBrowserRouter([
         path: "admin/categorys",
         element: (
           <PrivateRoute role={"admin"}>
-            <CategoryProvider>
-              <AdminCategorys></AdminCategorys>,
-            </CategoryProvider>
+            <AdminCategorys></AdminCategorys>,
           </PrivateRoute>
         ),
       },
@@ -154,9 +152,7 @@ const router = createBrowserRouter([
         path: "admin/categorys/add",
         element: (
           <PrivateRoute role={"admin"}>
-            <CategoryProvider>
-              <AdminAddCategory></AdminAddCategory>
-            </CategoryProvider>
+            <AdminAddCategory></AdminAddCategory>
           </PrivateRoute>
         ),
       },
@@ -164,9 +160,7 @@ const router = createBrowserRouter([
         path: "admin/categorys/update",
         element: (
           <PrivateRoute role={"admin"}>
-            <CategoryProvider>
-              <AdminUpdateCategory></AdminUpdateCategory>
-            </CategoryProvider>
+            <AdminUpdateCategory></AdminUpdateCategory>
           </PrivateRoute>
         ),
       },

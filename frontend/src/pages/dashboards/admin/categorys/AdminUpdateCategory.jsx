@@ -1,10 +1,11 @@
 import React from "react";
 import BackToPrev from "../../../../components/dashboard/shared/BackToPrev";
 import { useNavigate, useLocation } from "react-router-dom";
-import useCategories from "../../../../hooks/useCategories";
+import { useUpdateCategoryMutation } from "../../../../features/categories/categoriesApi";
+import { ErrorNotify, SuccessNotify } from "../../../../utils/NotifyContainer";
 
 const AdminUpdateCategory = () => {
-  const { loading, error, updateCategory } = useCategories();
+  const [updateCategory, { isError, isLoading }] = useUpdateCategoryMutation();
   const navigate = useNavigate();
   const { state } = useLocation();
   const { payload, type } = state || {};
@@ -14,17 +15,21 @@ const AdminUpdateCategory = () => {
     const form = e.target;
     const categoryName = form.name.value;
     if (categoryName == payload?.name) {
-      alert("No changes made");
+      ErrorNotify("No changes made");
       return;
     }
 
-    updateCategory(payload._id, { name: categoryName })
-      .then((data) => {
-        if (data?.success) {
-          navigate("/dashboard/admin/categorys");
-        }
+    updateCategory({ updateData: { name: categoryName }, id: payload._id })
+      .unwrap()
+      .then(() => {
+        SuccessNotify("Category has been updated");
+        navigate("/dashboard/admin/categorys");
       })
-      .catch((err) => alert(err));
+      .catch((error) => {
+        ErrorNotify(
+          error?.response?.data?.message || "Failed to update category"
+        );
+      });
   };
   return (
     <div className="py-2">
@@ -43,7 +48,7 @@ const AdminUpdateCategory = () => {
             />
             <br />
             <button disabled={loading} className="btn btn-dark">
-              {loading ? "Submiting..." : "Submit"}
+              {isLoading ? "Submiting..." : "Submit"}
             </button>
           </form>
         </div>
