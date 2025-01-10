@@ -2,7 +2,7 @@ import React from "react";
 
 const UserPurchaseTable = ({ orders }) => {
   return (
-    <div className="container mt-4">
+    <div>
       <div className="table-responsive">
         <table className="table table-striped">
           <thead className="thead-dark">

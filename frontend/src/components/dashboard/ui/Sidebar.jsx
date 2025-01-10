@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import "./Sidebar.css";
 import useAuth from "../../../hooks/useAuth";
-import { smalllogo } from "../../../assets/getAssets";
+import { logotext, sidebarlogo, smalllogo } from "../../../assets/getAssets";
 import DashboardIcon from "../icons/DashboardIcon";
 import ProfileIcon from "../icons/ProfileIcon";
 import StoreIcon from "../icons/StoreIcon";
@@ -11,7 +11,7 @@ import PurchaseIcon from "../icons/PurchaseIcon";
 import SettingsIcon from "../icons/SettingsIcon";
 import CategoryIcon from "../icons/CategoryIcon";
 
-export default function Sidebar() {
+export default function Sidebar({ showSidebar }) {
   const location = useLocation();
   const { user } = useAuth();
 
@@ -21,7 +21,7 @@ export default function Sidebar() {
       : "text-white";
   }
 
-  const renderSiderbarLinks = (role, isActive) => {
+  const renderSiderbarLinks = (role, isActive, showSidebar) => {
     switch (role) {
       case "user":
         return (
@@ -37,7 +37,9 @@ export default function Sidebar() {
                 aria-current="page"
               >
                 <DashboardIcon></DashboardIcon>
-                <span>Dashboard</span>
+                <span className={showSidebar ? "block" : "hidden"}>
+                  Dashboard
+                </span>
               </Link>
             </li>
             {/* my orders */}
@@ -51,7 +53,9 @@ export default function Sidebar() {
                 aria-current="page"
               >
                 <PurchaseIcon></PurchaseIcon>
-                <span>My Orders</span>
+                <span className={showSidebar ? "block" : "hidden"}>
+                  My Orders
+                </span>
               </Link>
             </li>
 
@@ -71,7 +75,7 @@ export default function Sidebar() {
                 aria-current="page"
               >
                 <StoreIcon></StoreIcon>
-                <span>Store</span>
+                <span className={showSidebar ? "block" : "hidden"}>Store</span>
               </Link>
             </li>
 
@@ -86,7 +90,9 @@ export default function Sidebar() {
                 aria-current="page"
               >
                 <OrderIcon></OrderIcon>
-                <span>Store orders</span>
+                <span className={showSidebar ? "block" : "hidden"}>
+                  Store orders
+                </span>
               </Link>
             </li>
             {/* books */}
@@ -105,7 +111,7 @@ export default function Sidebar() {
                 aria-current="page"
               >
                 <BookIcon></BookIcon>
-                <span>Books</span>
+                <span className={showSidebar ? "block" : "hidden"}>Books</span>
               </Link>
             </li>
 
@@ -120,7 +126,9 @@ export default function Sidebar() {
                 aria-current="page"
               >
                 <SettingsIcon></SettingsIcon>
-                <span>Settings</span>
+                <span className={showSidebar ? "block" : "hidden"}>
+                  Settings
+                </span>
               </Link>
             </li>
           </ul>
@@ -140,7 +148,9 @@ export default function Sidebar() {
                 aria-current="page"
               >
                 <DashboardIcon></DashboardIcon>
-                <span>Dashboard</span>
+                <span className={showSidebar ? "block" : "hidden"}>
+                  Dashboard
+                </span>
               </Link>
             </li>
 
@@ -155,7 +165,7 @@ export default function Sidebar() {
                 aria-current="page"
               >
                 <BookIcon></BookIcon>
-                <span>Books</span>
+                <span className={showSidebar ? "block" : "hidden"}>Books</span>
               </Link>
             </li>
             {/* categorys */}
@@ -173,7 +183,9 @@ export default function Sidebar() {
                 aria-current="page"
               >
                 <CategoryIcon></CategoryIcon>
-                <span>Categories</span>
+                <span className={showSidebar ? "block" : "hidden"}>
+                  Categories
+                </span>
               </Link>
             </li>
             {/* users */}
@@ -187,7 +199,7 @@ export default function Sidebar() {
                 aria-current="page"
               >
                 <ProfileIcon></ProfileIcon>
-                <span>Users</span>
+                <span className={showSidebar ? "block" : "hidden"}>Users</span>
               </Link>
             </li>
             {/* Stores */}
@@ -201,7 +213,7 @@ export default function Sidebar() {
                 aria-current="page"
               >
                 <StoreIcon></StoreIcon>
-                <span>Store</span>
+                <span className={showSidebar ? "block" : "hidden"}>Store</span>
               </Link>
             </li>
           </ul>
@@ -213,17 +225,23 @@ export default function Sidebar() {
   // /dashboard/admin
   return (
     <div
-      className="d-flex flex-column flex-shrink-0 p-3 text-bg-success h-full"
-      style={{ width: "280px" }}
+      className={`${
+        showSidebar ? "w-280" : "w-80"
+      } duration-300 d-flex flex-column flex-shrink-0 p-3 text-bg-success h-full shrink-0`}
     >
       <Link
         to={"/"}
-        className="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none"
+        className=" w-full d-flex align-items-center  mb-3 mb-md-0 me-md-auto text-white text-decoration-none block h-44"
       >
-        <img src={smalllogo} alt="" />
+        <div style={{ width: "60px", height: "44px" }}>
+          <img  src={sidebarlogo} alt="" />
+        </div>
+        <div className={`${showSidebar ? "block" : "hidden"}   pt-2 ms-2`}>
+          <h5 className="text-white text-lg font-semibold">The <br /> Bucchandlung</h5>
+        </div>
       </Link>
       <hr />
-      <div>{renderSiderbarLinks(user?.role, isActive)}</div>
+      <div>{renderSiderbarLinks(user?.role, isActive, showSidebar)}</div>
     </div>
   );
 }

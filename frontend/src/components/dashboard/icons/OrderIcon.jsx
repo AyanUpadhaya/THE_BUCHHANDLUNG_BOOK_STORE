@@ -3,8 +3,8 @@ import React from "react";
 const OrderIcon = () => {
   return (
     <svg
-      width="20px"
-      height="20px"
+      width="30px"
+      height="30px"
       viewBox="0 0 1024 1024"
       fill="#fff"
       className="icon"

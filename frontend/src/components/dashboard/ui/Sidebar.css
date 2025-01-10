@@ -46,3 +46,64 @@
 .scrollarea {
   overflow-y: auto;
 }
+
+.w-280 {
+  width: 280px;
+}
+.w-80 {
+  width: 80px;
+}
+.block {
+  display: block;
+}
+.hidden {
+  display: none;
+}
+
+.shrink-0 {
+  flex-shrink: 0;
+}
+
+/* Define custom duration classes */
+.duration-50 {
+  transition-duration: 50ms;
+}
+
+.duration-100 {
+  transition-duration: 100ms;
+}
+
+.duration-200 {
+  transition-duration: 200ms;
+}
+
+.duration-300 {
+  transition-duration: 300ms;
+}
+
+.duration-500 {
+  transition-duration: 500ms;
+}
+
+.duration-700 {
+  transition-duration: 700ms;
+}
+
+.duration-1000 {
+  transition-duration: 1000ms;
+}
+
+.text-lg{
+  font-weight: 18px;
+} 
+.font-semibold{
+  font-weight: 500;
+}
+
+.h-auto{
+  height: auto;
+}
+
+.h-44{
+  height:44px;
+}

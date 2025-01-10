@@ -1,4 +1,5 @@
 import useAuth from "../../../../hooks/useAuth";
+import UserOwnerDashboard from "./UserOwnerDashboard";
 
 function UserHome() {
   const { user } = useAuth();
@@ -14,9 +15,7 @@ function UserHome() {
             </div>
           </div>
           {/* table */}
-          <div>
-            <h4>Welcome {(user && user?.name) || "user"}</h4>
-          </div>
+          <UserOwnerDashboard user={user}></UserOwnerDashboard>
         </div>
       </div>
     </div>

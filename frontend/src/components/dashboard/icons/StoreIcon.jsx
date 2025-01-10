@@ -4,8 +4,8 @@ const StoreIcon = () => {
   return (
     <svg
       fill="#fff"
-      width="20px"
-      height="20px"
+      width="30px"
+      height="30px"
       viewBox="0 0 24 24"
       xmlns="http://www.w3.org/2000/svg"
     >

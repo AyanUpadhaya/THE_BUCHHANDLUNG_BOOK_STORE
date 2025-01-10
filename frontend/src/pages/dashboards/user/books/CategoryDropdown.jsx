@@ -4,10 +4,11 @@ const CategoryDropdown = ({
   categories,
   selectedCategory,
   onCategoryChange,
+  className,
 }) => {
   return (
-    <div className="w-full">
-      <label htmlFor="category" className="block mb-2 font-bold">
+    <div className={`${className}`}>
+      <label htmlFor="category" className="block font-bold">
         Category
       </label>
       <select

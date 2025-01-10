@@ -33,65 +33,73 @@ const UserStoreOrdersTable = ({ orders = [] }) => {
             </tr>
           </thead>
           <tbody>
-            {orders.map((order) =>
-              order?.stores?.filter(matchUserStoreId)?.map((store) => (
-                <tr key={`${order?._id}-${store?._id}`}>
-                  <td>{order?._id}</td>
-                  <td>{order?.order_by?.name}</td>
-                  <td>
-                    {store.books.map((book) => (
-                      <div key={book?.book_id?._id}>
-                        <strong>Title:</strong> {book?.book_id?.title}
-                        <br />
-                        <strong>Quantity:</strong> {book?.qty}
-                        <br />
-                        <strong>Price:</strong> ${book?.price}
-                        <hr />
-                      </div>
-                    ))}
-                  </td>
-                  <td>€{store?.total_price}</td>
-                  <td>{store?.status}</td>
-                  <td>{order?.payment_method}</td>
-                  <td>{new Date(order?.createdAt).toLocaleDateString()}</td>
-                  <td
-                    rowSpan={order?.stores?.length}
-                    className="d-flex flex-column gap-1 h-full"
-                  >
-                    <button
-                      disabled={
-                        store.status == "completed" ||
-                        store.status == "cancelled" ||
-                        statusUpdating
-                      }
-                      onClick={() =>
-                        handleStatusUpdate(
-                          order?._id,
-                          "completed",
-                          store.store_id
-                        )
-                      }
-                      className="btn btn-sm btn-dark"
+            {orders && orders?.length > 0 ? (
+              orders.map((order) =>
+                order?.stores?.filter(matchUserStoreId)?.map((store) => (
+                  <tr key={`${order?._id}-${store?._id}`}>
+                    <td>{order?._id}</td>
+                    <td>{order?.order_by?.name}</td>
+                    <td>
+                      {store.books.map((book) => (
+                        <div key={book?.book_id?._id}>
+                          <strong>Title:</strong> {book?.book_id?.title}
+                          <br />
+                          <strong>Quantity:</strong> {book?.qty}
+                          <br />
+                          <strong>Price:</strong> ${book?.price}
+                          <hr />
+                        </div>
+                      ))}
+                    </td>
+                    <td>€{store?.total_price}</td>
+                    <td>{store?.status}</td>
+                    <td>{order?.payment_method}</td>
+                    <td>{new Date(order?.createdAt).toLocaleDateString()}</td>
+                    <td
+                      rowSpan={order?.stores?.length}
+                      className="d-flex flex-column gap-1 h-full"
                     >
-                      <TickIcon />
-                    </button>
-                    <br />
-                    <button
-                      disabled={
-                        order.status == "completed" ||
-                        order.status == "cancelled" ||
-                        statusUpdating
-                      }
-                      onClick={() =>
-                        handleStatusUpdate(order?._id, "cancelled")
-                      }
-                      className="btn btn-sm btn-danger"
-                    >
-                      <CancelIcon />
-                    </button>
-                  </td>
-                </tr>
-              ))
+                      <button
+                        disabled={
+                          store.status == "completed" ||
+                          store.status == "cancelled" ||
+                          statusUpdating
+                        }
+                        onClick={() =>
+                          handleStatusUpdate(
+                            order?._id,
+                            "completed",
+                            store.store_id
+                          )
+                        }
+                        className="btn btn-sm btn-dark"
+                      >
+                        <TickIcon />
+                      </button>
+                      <br />
+                      <button
+                        disabled={
+                          order.status == "completed" ||
+                          order.status == "cancelled" ||
+                          statusUpdating
+                        }
+                        onClick={() =>
+                          handleStatusUpdate(order?._id, "cancelled")
+                        }
+                        className="btn btn-sm btn-danger"
+                      >
+                        <CancelIcon />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )
+            ) : (
+              <tr>
+                <td colSpan="7" className="text-center">
+                  No books found.
+                </td>
+              </tr>
             )}
           </tbody>
         </table>
