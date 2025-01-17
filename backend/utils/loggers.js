@@ -12,7 +12,8 @@ function logError(message, error) {
 function logInfo(message = "", data) {
   const logData = {
     "@timestamp": new Date().toISOString(),
-    "message": message,
+    level: "info",
+    message: message,
     ...data,
   };
   console.log(logData);

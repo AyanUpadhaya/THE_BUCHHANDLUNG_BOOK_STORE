@@ -1,5 +1,5 @@
-const cloudinary = require("../config/cloudinary.config")
-
+const cloudinary = require("../config/cloudinary.config");
+const { logInfo, logError } = require("./loggers");
 const getDataUri = require("./datauri");
 
 const uploadToCloudinary = async (req) => {
@@ -11,11 +11,11 @@ const uploadToCloudinary = async (req) => {
     const file = req.files.file[0];
     const fileUri = getDataUri(file);
     const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+    logInfo("Upload successful",{cloudResponse});
     const finalOuput = cloudResponse.secure_url;
     return [finalOuput, fileName];
   } catch (error) {
-    console.log(error);
-    logger.error(error.message || "Failed to upload cloudinary");
+    logError("Failed to upload cloudinary", error);
   }
 };
 
